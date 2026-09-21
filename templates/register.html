@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpotUM — Sign up</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --um-red: #C4122F; --um-red-dark: #8E0D22; --pink:#FF6B8B; --purple:#6C5CE7; --cream:#FFF8F3; --muted:#7a7a85; }
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    min-height: 100vh; display:flex; align-items:center; justify-content:center;
+    padding: 20px; position: relative; overflow: hidden;
+  }
+  .blob { position:absolute; border-radius:50%; filter: blur(60px); opacity: 0.3; }
+  .b1 { width: 300px; height:300px; background: var(--purple); top:-80px; right:-80px; opacity: 0.25; }
+  .b2 { width: 260px; height:260px; background: var(--pink); bottom:-80px; left:-80px; }
+
+  .card {
+    position: relative; z-index: 1;
+    background: white; border-radius: 24px; padding: 40px 34px;
+    max-width: 380px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+  }
+  .logo { text-align:center; font-family:'Poppins'; font-weight:800; font-size:22px; color: var(--um-red); margin-bottom: 4px; }
+  .card h1 { font-family:'Poppins'; font-size: 20px; text-align:center; margin: 10px 0 6px; }
+  .card p.sub { text-align:center; color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+
+  label { display:block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
+  input {
+    width: 100%; border: 1.5px solid #eee; border-radius: 12px;
+    padding: 12px 14px; font-size: 14px; font-family: inherit; outline: none;
+    margin-bottom: 16px; transition: border-color 0.15s;
+  }
+  input:focus { border-color: var(--um-red); }
+
+  button {
+    width: 100%; background: var(--um-red); color: white; border: none;
+    border-radius: 12px; padding: 13px 0; font-weight: 700; font-size: 14px;
+    font-family: inherit; cursor: pointer; box-shadow: 0 10px 24px rgba(196,18,47,0.25);
+    transition: transform 0.15s;
+  }
+  button:hover { transform: translateY(-1px); background: var(--um-red-dark); }
+
+  .error {
+    background: #fdeaec; color: #b3261e; font-size: 12.5px; padding: 10px 14px;
+    border-radius: 10px; margin-bottom: 16px;
+  }
+
+  .switch { text-align:center; margin-top: 20px; font-size: 13px; color: var(--muted); }
+  .switch a { color: var(--um-red); font-weight: 700; text-decoration:none; }
+
+  .back { display:block; text-align:center; margin-top: 14px; font-size: 12px; color: var(--muted); text-decoration:none; }
+</style>
+</head>
+<body>
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+
+  <div class="card">
+    <div class="logo">📚 SpotUM</div>
+    <h1>Create your account</h1>
+    <p class="sub">Join SpotUM to start booking study spots.</p>
+
+    {% if error %}<div class="error">{{ error }}</div>{% endif %}
+
+    <form method="POST">
+      <label>Full name</label>
+      <input type="text" name="name" placeholder="e.g. Ilias" required autofocus />
+
+      <label>Email</label>
+      <input type="email" name="email" placeholder="you@student.maastrichtuniversity.nl" required />
+
+      <label>Password</label>
+      <input type="password" name="password" placeholder="At least 6 characters" required minlength="6" />
+
+      <button type="submit">Sign up</button>
+    </form>
+
+    <div class="switch">Already have an account? <a href="/login">Log in</a></div>
+    <a class="back" href="/">← Back to home</a>
+  </div>
+</body>
+</html>

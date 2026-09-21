@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpotUM — Find your perfect study spot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --um-red: #C4122F;
+    --um-red-dark: #8E0D22;
+    --pink: #FF6B8B;
+    --peach: #FFB199;
+    --cream: #FFF8F3;
+    --purple: #6C5CE7;
+    --text: #2b2b33;
+    --muted: #7a7a85;
+  }
+  * { box-sizing: border-box; margin:0; padding:0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+  section[id] { scroll-margin-top: 90px; }
+  h1, h2, h3 { font-family: 'Poppins', sans-serif; }
+
+  .blob {
+    position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.35; z-index: 0;
+  }
+  .blob-1 { width: 380px; height: 380px; background: var(--pink); top: -120px; right: -100px; }
+  .blob-2 { width: 320px; height: 320px; background: var(--purple); top: 300px; left: -140px; opacity: 0.25; }
+  .blob-3 { width: 260px; height: 260px; background: var(--peach); bottom: -80px; right: 10%; opacity: 0.3; }
+
+  nav {
+    position: relative; z-index: 2;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 22px 32px; max-width: 1100px; margin: 0 auto;
+  }
+  .logo { display:flex; align-items:center; gap: 8px; font-family:'Poppins'; font-weight: 800; font-size: 20px; color: var(--um-red); }
+  .logo-emoji { font-size: 22px; }
+  .nav-links { display:flex; gap: 20px; align-items:center; }
+  .nav-links a {
+    color: var(--text); text-decoration:none; font-size: 14px; font-weight: 600;
+  }
+  .nav-cta {
+    background: var(--um-red); color:white; padding: 10px 20px; border-radius: 30px;
+    font-weight: 700; font-size: 13px; box-shadow: 0 6px 16px rgba(196,18,47,0.3);
+  }
+  .nav-cta:hover { background: var(--um-red-dark); }
+
+  .hero {
+    position: relative; z-index: 1;
+    max-width: 1100px; margin: 0 auto;
+    padding: 50px 32px 80px;
+    text-align: center;
+  }
+  .pill {
+    display:inline-block; background: white; border: 1px solid #ffe2e8;
+    color: var(--um-red); font-size: 12px; font-weight: 700; padding: 6px 16px;
+    border-radius: 30px; margin-bottom: 22px; box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  }
+  .hero h1 {
+    font-size: 46px; font-weight: 800; line-height: 1.15; margin-bottom: 16px;
+    background: linear-gradient(135deg, var(--um-red), var(--purple));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero p.sub {
+    font-size: 16px; color: var(--muted); max-width: 480px; margin: 0 auto 30px;
+    line-height: 1.6;
+  }
+  .hero-actions { display:flex; gap: 14px; justify-content:center; flex-wrap: wrap; margin-bottom: 50px; }
+  .btn-primary {
+    background: var(--um-red); color:white; padding: 14px 30px; border-radius: 30px;
+    font-weight: 700; font-size: 15px; text-decoration:none; display:inline-flex; align-items:center; gap:8px;
+    box-shadow: 0 10px 24px rgba(196,18,47,0.3); transition: transform 0.15s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); }
+  .btn-secondary {
+    background: white; color: var(--text); padding: 14px 30px; border-radius: 30px;
+    font-weight: 700; font-size: 15px; text-decoration:none; border: 2px solid #eee;
+    transition: transform 0.15s;
+  }
+  .btn-secondary:hover { transform: translateY(-2px); border-color: var(--um-red); }
+
+  .stats-strip {
+    display:flex; justify-content:center; gap: 40px; flex-wrap: wrap;
+    background: white; border-radius: 24px; padding: 26px 30px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.06); max-width: 700px; margin: 0 auto;
+  }
+  .stat { text-align:center; }
+  .stat .n { font-size: 28px; font-weight: 800; color: var(--um-red); font-family:'Poppins'; }
+  .stat .l { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  section.features {
+    position: relative; z-index: 1;
+    max-width: 1100px; margin: 0 auto; padding: 40px 32px 60px;
+  }
+  .features h2 {
+    text-align:center; font-size: 30px; font-weight: 800; margin-bottom: 8px;
+  }
+  .features p.center-sub { text-align:center; color: var(--muted); margin-bottom: 40px; font-size: 14px; }
+
+  .feature-grid {
+    display:grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+  }
+  .feature-card {
+    background: white; border-radius: 22px; padding: 28px 24px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .feature-card:hover { transform: translateY(-4px); box-shadow: 0 14px 32px rgba(0,0,0,0.08); }
+  .feature-icon {
+    width: 52px; height: 52px; border-radius: 16px; display:flex; align-items:center;
+    justify-content:center; font-size: 24px; margin-bottom: 16px;
+  }
+  .icon-1 { background: #FFE8EC; }
+  .icon-2 { background: #EAE6FF; }
+  .icon-3 { background: #FFF0E0; }
+  .feature-card h3 { font-size: 16px; margin-bottom: 8px; }
+  .feature-card p { font-size: 13.5px; color: var(--muted); line-height: 1.5; }
+
+  section.how {
+    background: white; padding: 60px 32px; position: relative; z-index: 1;
+  }
+  .how-inner { max-width: 900px; margin: 0 auto; }
+  .how h2 { text-align:center; font-size: 28px; margin-bottom: 40px; }
+  .steps { display:flex; gap: 20px; flex-wrap: wrap; justify-content:center; }
+  .step {
+    flex: 1; min-width: 200px; text-align:center; padding: 20px;
+  }
+  .step-num {
+    width: 40px; height: 40px; border-radius: 50%; background: var(--um-red); color:white;
+    display:flex; align-items:center; justify-content:center; font-weight: 800; margin: 0 auto 14px;
+    font-family: 'Poppins';
+  }
+  .step h4 { font-size: 14.5px; margin-bottom: 6px; }
+  .step p { font-size: 12.5px; color: var(--muted); }
+
+  footer.home-footer {
+    text-align:center; padding: 40px 20px; color: var(--muted); font-size: 12.5px;
+    position: relative; z-index: 1;
+  }
+  footer.home-footer a { color: var(--um-red); text-decoration:none; font-weight: 600; }
+
+  @media (max-width: 720px) {
+    .hero h1 { font-size: 32px; }
+    .feature-grid { grid-template-columns: 1fr; }
+    .stats-strip { gap: 20px; padding: 20px; }
+    nav { padding: 18px 20px; }
+    .nav-links a:not(.nav-cta) { display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+
+<nav>
+  <div class="logo"><span class="logo-emoji">📚</span> SpotUM</div>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#how">How it works</a>
+    <a class="nav-cta" href="/app">Find a spot →</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="pill">🎓 Made for Maastricht University students</div>
+  <h1>Stop wandering.<br>Start studying.</h1>
+  <p class="sub">SpotUM shows you which UM study rooms are free right now, across every faculty — and lets you book one in seconds.</p>
+
+  <div class="hero-actions">
+    <a class="btn-primary" href="/app">✨ Find a free spot</a>
+    <a class="btn-secondary" href="#how">See how it works</a>
+  </div>
+
+  <div class="stats-strip">
+    <div class="stat"><div class="n">{{ total_rooms }}</div><div class="l">Rooms tracked</div></div>
+    <div class="stat"><div class="n">8</div><div class="l">UM buildings</div></div>
+    <div class="stat"><div class="n">24/7</div><div class="l">Live status</div></div>
+  </div>
+</div>
+
+<section class="features" id="features">
+  <h2>Why students love SpotUM</h2>
+  <p class="center-sub">Built by a student, for students — no more running between buildings.</p>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon icon-1">🟢</div>
+      <h3>Live free/busy status</h3>
+      <p>See at a glance which rooms are open right now, colour-coded and updated automatically.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon icon-2">📅</div>
+      <h3>One-tap booking</h3>
+      <p>Pick a date and time, add your name, and lock in your spot before someone else does.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon icon-3">🏢</div>
+      <h3>All UM buildings</h3>
+      <p>Law, SBE, FASoS, FHML, FPN, UCM, DKE, and the University Library — all in one place.</p>
+    </div>
+  </div>
+</section>
+
+<section class="how" id="how">
+  <div class="how-inner">
+    <h2>How it works</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h4>Browse rooms</h4>
+        <p>Filter by free/busy, search by building or room name.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h4>Pick your slot</h4>
+        <p>Choose a date, start time, and end time that works for you.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h4>Study happily</h4>
+        <p>Your room is reserved — no more searching campus for a free desk.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="home-footer">
+  SpotUM · Built for Maastricht University students · <a href="/admin/login">Admin panel</a>
+</footer>
+
+<script>
+document.querySelectorAll('.feature-card, .step').forEach(el => {
+  el.style.opacity = 0;
+  el.style.transform = 'translateY(24px)';
+  el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+});
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => {
+        entry.target.style.opacity = 1;
+        entry.target.style.transform = 'translateY(0)';
+      }, i * 80);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.feature-card, .step').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpotUM — UM Study Spot Finder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --um-red: #C4122F;
+    --um-red-dark: #8E0D22;
+    --bg: #f7f7f9;
+    --card: #ffffff;
+    --text: #1a1a1e;
+    --muted: #6b6b73;
+    --free: #1a9e52;
+    --free-bg: #e7f8ee;
+    --busy: #d1263a;
+    --busy-bg: #fdeaec;
+    --radius: 16px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  header {
+    background: linear-gradient(135deg, var(--um-red) 0%, var(--um-red-dark) 100%);
+    color: white;
+    padding: 36px 24px 44px;
+    border-radius: 0 0 28px 28px;
+  }
+  .header-inner { max-width: 900px; margin: 0 auto; }
+  .brand { display:flex; align-items:center; gap:10px; margin-bottom: 18px; }
+  .brand-dot { width: 12px; height: 12px; border-radius:50%; background: white; opacity:0.9; }
+  .brand-name { font-weight: 800; font-size: 15px; letter-spacing: 0.5px; text-transform: uppercase; opacity: 0.9; }
+  header h1 { font-size: 30px; font-weight: 800; margin: 0 0 6px; }
+  header p { margin: 0; opacity: 0.9; font-size: 14px; max-width: 480px; }
+
+  .home-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: white; text-decoration: none; font-size: 13px; font-weight: 600;
+    background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.3);
+    padding: 8px 14px; border-radius: 20px; margin-bottom: 16px;
+    transition: background 0.15s;
+  }
+  .home-link:hover { background: rgba(255,255,255,0.26); }
+
+  .header-top-row { display:flex; justify-content: space-between; align-items:center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+
+  .logout-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: white; text-decoration: none; font-size: 13px; font-weight: 600;
+    background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.3);
+    padding: 8px 14px; border-radius: 20px;
+    transition: background 0.15s;
+  }
+  .logout-link:hover { background: rgba(255,255,255,0.26); }
+
+  .user-greeting { color: white; font-size: 13px; opacity: 0.9; margin-right: 8px; }
+
+  .stats { display:flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+  .stat-card {
+    background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 14px;
+    padding: 12px 18px;
+    min-width: 110px;
+  }
+  .stat-num { font-size: 24px; font-weight: 800; line-height:1; }
+  .stat-label { font-size: 11px; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.4px; margin-top: 4px; }
+
+  main { max-width: 900px; margin: -20px auto 40px; padding: 0 24px; }
+
+  .controls {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    margin-bottom: 18px;
+  }
+  .search-input {
+    flex: 1;
+    min-width: 160px;
+    border: 1px solid #e6e6ea;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+  }
+  .search-input:focus { border-color: var(--um-red); }
+  .filter-btn {
+    border: 1px solid #e6e6ea;
+    background: white;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    color: var(--muted);
+    transition: all 0.15s;
+  }
+  .filter-btn.active {
+    background: var(--um-red);
+    color: white;
+    border-color: var(--um-red);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+  }
+
+  .room {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 18px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .room:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+
+  .room-top { display:flex; justify-content: space-between; align-items:flex-start; }
+  .room-name { font-weight: 700; font-size: 16px; margin: 0 0 2px; }
+  .room-building { color: var(--muted); font-size: 13px; }
+  .room-capacity { color: var(--muted); font-size: 12px; margin-top: 2px; }
+
+  .badge {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 10px; border-radius: 20px;
+    font-size: 12px; font-weight: 700; white-space: nowrap;
+  }
+  .badge.free { background: var(--free-bg); color: var(--free); }
+  .badge.busy { background: var(--busy-bg); color: var(--busy); }
+  .badge .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .badge.free .dot { background: var(--free); }
+  .badge.busy .dot { background: var(--busy); }
+
+  .room-footer { margin-top: 12px; font-size: 12px; color: var(--muted); }
+
+  .book-btn {
+    margin-top: 12px;
+    width: 100%;
+    background: var(--um-red);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 9px 0;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .book-btn:hover { background: var(--um-red-dark); }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+    display: none; align-items: center; justify-content: center;
+    padding: 20px; z-index: 100;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white; border-radius: 18px; padding: 24px;
+    max-width: 380px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  }
+  .modal h2 { font-size: 18px; margin: 0 0 4px; }
+  .modal .modal-sub { color: var(--muted); font-size: 13px; margin-bottom: 16px; }
+  .modal label { display:block; font-size: 12px; font-weight: 600; margin: 12px 0 4px; color: var(--muted); }
+  .modal input {
+    width: 100%; border: 1px solid #e6e6ea; border-radius: 10px;
+    padding: 10px 12px; font-size: 14px; font-family: inherit; outline: none;
+  }
+  .modal input:focus { border-color: var(--um-red); }
+  .modal-actions { display:flex; gap: 8px; margin-top: 20px; }
+  .modal-actions button {
+    flex: 1; padding: 10px 0; border-radius: 10px; font-weight: 600;
+    font-size: 13px; font-family: inherit; cursor: pointer; border: none;
+  }
+  .btn-cancel { background: #f0f0f2; color: var(--text); }
+  .btn-confirm { background: var(--um-red); color: white; }
+  .modal-error {
+    color: var(--busy); font-size: 12px; margin-top: 8px; display: none;
+  }
+
+  .upcoming-list { margin-top: 8px; font-size: 11.5px; color: var(--muted); }
+  .upcoming-item { display:flex; justify-content: space-between; align-items:center; padding: 3px 0; gap: 6px; }
+  .upcoming-time { flex-shrink: 0; }
+  .upcoming-cancel {
+    background: none; border: none; color: var(--busy); font-size: 11px;
+    font-weight: 600; cursor: pointer; font-family: inherit; padding: 0;
+    text-decoration: underline;
+  }
+
+  footer {
+    text-align: center; color: var(--muted); font-size: 12px;
+    margin: 30px 0 20px;
+  }
+  footer a { color: var(--muted); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 480px) {
+    header { padding: 28px 18px 36px; border-radius: 0 0 20px 20px; }
+    header h1 { font-size: 24px; }
+    main { padding: 0 16px; margin-top: -14px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-top-row">
+      <a class="home-link" href="/">← Back to home</a>
+      <div>
+        {% if user_name %}<span class="user-greeting">Hi, {{ user_name }}!</span>{% endif %}
+        <a class="logout-link" href="/profile">My Profile</a>
+        <a class="logout-link" href="/logout">Log out</a>
+      </div>
+    </div>
+    <div class="brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">Maastricht University</span>
+    </div>
+    <h1>SpotUM</h1>
+    <p>Find and book a free study spot on campus in real time.</p>
+
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-num" id="stat-total">–</div>
+        <div class="stat-label">Rooms tracked</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-free">–</div>
+        <div class="stat-label">Free now</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-busy">–</div>
+        <div class="stat-label">Busy now</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <input class="search-input" id="search" placeholder="Search room or building…" />
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="free">Free only</button>
+    <button class="filter-btn" data-filter="busy">Busy only</button>
+  </div>
+
+  <div class="grid" id="rooms"></div>
+</main>
+
+<footer id="updated">Updating…</footer>
+<footer><a href="/admin/login">Admin panel</a></footer>
+
+<!-- Booking modal -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <h2 id="modal-room-name">Book room</h2>
+    <div class="modal-sub" id="modal-room-building"></div>
+
+    <label>Your name</label>
+    <input type="text" id="booked-by" placeholder="e.g. Ilias" />
+
+    <label>Date</label>
+    <input type="date" id="book-date" />
+
+    <label>Start time</label>
+    <input type="time" id="book-start" />
+
+    <label>End time</label>
+    <input type="time" id="book-end" />
+
+    <div class="modal-error" id="modal-error"></div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" id="modal-cancel">Cancel</button>
+      <button class="btn-confirm" id="modal-confirm">Confirm booking</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let allRooms = [];
+let currentFilter = 'all';
+let searchTerm = '';
+let activeRoomId = null;
+
+async function loadRooms() {
+  const res = await fetch('/api/rooms');
+  allRooms = await res.json();
+  render();
+  document.getElementById('updated').textContent =
+    'SpotUM · Last updated ' + new Date().toLocaleTimeString();
+}
+
+function render() {
+  const container = document.getElementById('rooms');
+  let rooms = allRooms;
+
+  if (currentFilter !== 'all') {
+    rooms = rooms.filter(r => r.status === currentFilter);
+  }
+  if (searchTerm) {
+    const q = searchTerm.toLowerCase();
+    rooms = rooms.filter(r =>
+      r.name.toLowerCase().includes(q) || r.building.toLowerCase().includes(q)
+    );
+  }
+
+  container.innerHTML = rooms.map(r => {
+    const upcoming = (r.bookings || []).slice(0, 3).map(b => `
+      <div class="upcoming-item">
+        <span>${b.booked_by} · <span class="upcoming-time">${b.start_time.slice(0,10)} ${b.start_time.slice(11,16)}–${b.end_time.slice(11,16)}</span></span>
+        <button class="upcoming-cancel" onclick="cancelBooking(${b.id})">Cancel</button>
+      </div>
+    `).join('');
+
+    return `
+    <div class="room">
+      <div class="room-top">
+        <div>
+          <div class="room-name">${r.name}</div>
+          <div class="room-building">${r.building}</div>
+          <div class="room-capacity">Capacity: ${r.capacity}</div>
+        </div>
+        <div class="badge ${r.status}">
+          <span class="dot"></span>
+          ${r.status === 'free' ? 'Free' : 'Busy'}
+        </div>
+      </div>
+      <div class="room-footer">
+        ${r.status === 'busy' && r.until ? 'Free again on ' + r.until.slice(0,10) + ' at ' + r.until.slice(11,16) : 'Available now'}
+      </div>
+      ${upcoming ? `<div class="upcoming-list">${upcoming}</div>` : ''}
+      <button class="book-btn" onclick="openModal(${r.id}, '${r.name.replace(/'/g, "\\'")}', '${r.building.replace(/'/g, "\\'")}')">Book this room</button>
+    </div>
+  `; }).join('') || '<div style="color:#999; padding:20px; text-align:center; grid-column:1/-1;">No rooms match your filters</div>';
+
+  document.getElementById('stat-total').textContent = allRooms.length;
+  document.getElementById('stat-free').textContent = allRooms.filter(r => r.status === 'free').length;
+  document.getElementById('stat-busy').textContent = allRooms.filter(r => r.status === 'busy').length;
+}
+
+async function cancelBooking(bookingId) {
+  if (!confirm('Cancel this booking?')) return;
+  await fetch('/api/cancel/' + bookingId, { method: 'DELETE' });
+  loadRooms();
+}
+
+function openModal(roomId, name, building) {
+  activeRoomId = roomId;
+  document.getElementById('modal-room-name').textContent = 'Book ' + name;
+  document.getElementById('modal-room-building').textContent = building;
+  document.getElementById('modal-error').style.display = 'none';
+  document.getElementById('booked-by').value = '';
+
+  const today = new Date();
+  document.getElementById('book-date').value = today.toISOString().slice(0,10);
+  document.getElementById('book-start').value = '';
+  document.getElementById('book-end').value = '';
+
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  activeRoomId = null;
+}
+
+document.getElementById('modal-cancel').addEventListener('click', closeModal);
+document.getElementById('modal-overlay').addEventListener('click', (e) => {
+  if (e.target.id === 'modal-overlay') closeModal();
+});
+
+document.getElementById('modal-confirm').addEventListener('click', async () => {
+  const bookedBy = document.getElementById('booked-by').value.trim();
+  const date = document.getElementById('book-date').value;
+  const start = document.getElementById('book-start').value;
+  const end = document.getElementById('book-end').value;
+  const errorEl = document.getElementById('modal-error');
+
+  if (!bookedBy || !date || !start || !end) {
+    errorEl.textContent = 'Please fill in all fields.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  const startTime = `${date} ${start}`;
+  const endTime = `${date} ${end}`;
+
+  try {
+    const res = await fetch('/api/book', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        room_id: activeRoomId,
+        booked_by: bookedBy,
+        start_time: startTime,
+        end_time: endTime
+      })
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      errorEl.textContent = data.error || 'Something went wrong.';
+      errorEl.style.display = 'block';
+      return;
+    }
+
+    closeModal();
+    loadRooms();
+  } catch (err) {
+    errorEl.textContent = 'Network error, try again.';
+    errorEl.style.display = 'block';
+  }
+});
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    render();
+  });
+});
+
+document.getElementById('search').addEventListener('input', (e) => {
+  searchTerm = e.target.value;
+  render();
+});
+
+loadRooms();
+setInterval(loadRooms, 30000);
+</script>
+
+</body>
+</html>
