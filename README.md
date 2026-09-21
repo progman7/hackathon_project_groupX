@@ -31,6 +31,8 @@ python seed_demo_data.py
 python app.py
 
 6. Open the address shown in the terminal in your browser (usually http://127.0.0.1:5000)
+   
+7. Admin password is spotum2026
 
 ## Project structure
 
